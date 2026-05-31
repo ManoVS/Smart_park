@@ -1,34 +1,39 @@
 {
-  "version": 3,
-  "functions": {
-    "backend/app.py": {
-      "runtime": "python3.11"
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/app.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "frontend/**/*",
+      "use": "@vercel/static"
     }
-  },
+  ],
   "routes": [
     {
       "src": "/generate_ticket",
-      "dest": "/backend/app.py"
+      "dest": "backend/app.py"
     },
     {
       "src": "/generate_qr/(.*)",
-      "dest": "/backend/app.py"
+      "dest": "backend/app.py"
     },
     {
       "src": "/dashboard",
-      "dest": "/backend/app.py"
+      "dest": "backend/app.py"
     },
     {
       "src": "/health",
-      "dest": "/backend/app.py"
+      "dest": "backend/app.py"
     },
     {
-      "src": "/",
-      "dest": "/frontend/index.html"
+      "src": "/$",
+      "dest": "frontend/index.html"
     },
     {
       "src": "/(.*)",
-      "dest": "/frontend/$1"
+      "dest": "frontend/$1"
     }
   ]
 }
