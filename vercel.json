@@ -6,18 +6,11 @@
       "use": "@vercel/python"
     },
     {
-      "src": "frontend",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "frontend"
-      }
+      "src": "frontend/**/*",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "backend/app.py"
-    },
     {
       "src": "/generate_ticket",
       "dest": "backend/app.py"
@@ -35,8 +28,13 @@
       "dest": "backend/app.py"
     },
     {
+      "src": "/$",
+      "dest": "frontend/index.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "frontend/$1"
     }
   ]
 }
+
