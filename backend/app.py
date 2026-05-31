@@ -13,23 +13,33 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "DELETE"], "allow_headers": ["Content-Type"]}}, supports_credentials=True)
 
-# Initialize Supabase
+# Initialize Supabase lazily so the app can start even if env vars are missing
 SUPABASE_URL = os.getenv("SUPABASE_URL") or os.getenv("NEXT_PUBLIC_SUPABASE_URL")
 SUPABASE_KEY = (
     os.getenv("SUPABASE_KEY")
     or os.getenv("SUPABASE_ANON_KEY")
     or os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 )
-if not SUPABASE_URL or not SUPABASE_KEY:
-    raise RuntimeError(
-        "Missing Supabase credentials. Set SUPABASE_URL and SUPABASE_KEY (or SUPABASE_ANON_KEY) in your environment."
-    )
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+supabase = None
+
+def get_supabase():
+    global supabase
+    if supabase is not None:
+        return supabase
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        raise RuntimeError(
+            "Missing Supabase credentials. Set SUPABASE_URL and SUPABASE_KEY "
+            "(or SUPABASE_ANON_KEY) in your environment."
+        )
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    return supabase
 
 # Ticket counter (stored in Supabase)
 def get_next_ticket():
     try:
-        response = supabase.table("tickets").select("*").order("ticket", desc=True).limit(1).execute()
+        client = get_supabase()
+        response = client.table("tickets").select("*").order("ticket", desc=True).limit(1).execute()
         if response.data:
             return response.data[0]["ticket"] + 1
         return 1000
@@ -43,7 +53,8 @@ def generate_ticket():
         ticket_num = get_next_ticket()
         
         # Insert ticket into database
-        supabase.table("tickets").insert({
+        client = get_supabase()
+        client.table("tickets").insert({
             "ticket": ticket_num,
             "active": 0
         }).execute()
@@ -87,7 +98,8 @@ def generate_qr(slot, ticket):
         img_io.seek(0)
         
         # Store parking record in database
-        supabase.table("parked_vehicles").upsert({
+        client = get_supabase()
+        client.table("parked_vehicles").upsert({
             "ticket": ticket,
             "slot": slot,
             "active": 1
@@ -101,7 +113,8 @@ def generate_qr(slot, ticket):
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
     try:
-        response = supabase.table("parked_vehicles").select("*").eq("active", 1).execute()
+        client = get_supabase()
+        response = client.table("parked_vehicles").select("*").eq("active", 1).execute()
         vehicles = response.data if response.data else []
         return jsonify(vehicles)
     except Exception as e:
@@ -111,7 +124,8 @@ def dashboard():
 @app.route('/clear/<int:ticket>', methods=['DELETE'])
 def clear_slot(ticket):
     try:
-        supabase.table("parked_vehicles").update({"active": 0}).eq("ticket", ticket).execute()
+        client = get_supabase()
+        client.table("parked_vehicles").update({"active": 0}).eq("ticket", ticket).execute()
         return jsonify({"success": True})
     except Exception as e:
         print(f"Error: {e}")
