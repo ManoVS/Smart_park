@@ -83,6 +83,8 @@ git push -u origin main
    - In Vercel project settings, add Environment Variables:
      - `SUPABASE_URL`: Your Supabase project URL
      - `SUPABASE_KEY`: Your Supabase anon key
+       - If you prefer, you can also use `SUPABASE_ANON_KEY` or `SUPABASE_SERVICE_ROLE_KEY`
+       - The backend will read `SUPABASE_KEY`, `SUPABASE_ANON_KEY`, or `SUPABASE_SERVICE_ROLE_KEY`
 
 4. **Deploy**:
    - Vercel will automatically build and deploy

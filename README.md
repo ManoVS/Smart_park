@@ -41,12 +41,13 @@ pip install -r backend/requirements.txt
 ```
 
 2. **Configure Supabase**:
-   - Get `SUPABASE_URL` and `SUPABASE_KEY` from Supabase dashboard
+   - Get `SUPABASE_URL` and your Supabase anon key from Supabase dashboard
    - Update `backend/.env`:
    ```
    SUPABASE_URL=your_url
-   SUPABASE_KEY=your_key
+   SUPABASE_KEY=your_anon_key
    ```
+   - If you use a different name in Vercel, the backend also supports `SUPABASE_ANON_KEY` or `SUPABASE_SERVICE_ROLE_KEY`.
 
 3. **Run Backend**:
 ```bash
