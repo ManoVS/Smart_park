@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+Smart Parking Dashboard
+</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>
+Smart Parking System
+</h1>
+
+<!-- ===================== -->
+<!-- Generate Ticket -->
+<!-- ===================== -->
+
+<div class="card">
+
+<h2>
+Generate Ticket
+</h2>
+
+<button onclick="generateTicket()">
+Generate Ticket
+</button>
+
+<p id="ticketText"></p>
+
+</div>
+
+<!-- ===================== -->
+<!-- Generate QR -->
+<!-- ===================== -->
+
+<div class="card">
+
+<h2>
+Generate QR
+</h2>
+
+<input
+id="slotInput"
+type="number"
+min="0"
+max="5"
+placeholder="Slot Number">
+
+<button onclick="generateQR()">
+Generate QR
+</button>
+
+<br><br>
+
+<img
+id="qrImage"
+width="250">
+
+</div>
+
+<!-- ===================== -->
+<!-- Dashboard -->
+<!-- ===================== -->
+
+<div class="card">
+
+<h2>
+Parking Dashboard
+</h2>
+
+<button onclick="loadDashboard()">
+Refresh
+</button>
+
+<div id="slots">
+
+<div class="slot free" id="slot0">
+Slot 0
+</div>
+
+<div class="slot free" id="slot1">
+Slot 1
+</div>
+
+<div class="slot free" id="slot2">
+Slot 2
+</div>
+
+<div class="slot free" id="slot3">
+Slot 3
+</div>
+
+<div class="slot free" id="slot4">
+Slot 4
+</div>
+
+<div class="slot free" id="slot5">
+Slot 5
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+
+</html>
